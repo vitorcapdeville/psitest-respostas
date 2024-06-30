@@ -2,16 +2,13 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 class QuestionariosBase(SQLModel):
-    psicologo_id: int
-    paciente_id: int
+    psicologo_email: str
+    paciente_email: str
     questionario_id: int
 
 
 class QuestionariosEnviados(QuestionariosBase, table=True):
     id: int = Field(primary_key=True)
-    psicologo_id: int
-    paciente_id: int
-    questionario_id: int
 
     respostas: list["Resposta"] = Relationship(back_populates="questionario")
 
