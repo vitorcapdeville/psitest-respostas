@@ -13,6 +13,10 @@ class QuestionariosEnviados(QuestionariosBase, table=True):
     respostas: list["Resposta"] = Relationship(back_populates="questionario")
 
 
+class QuestionariosEnviadosComStatus(QuestionariosBase):
+    respondido: bool
+
+
 class RespostaBase(SQLModel):
     pergunta_id: int
     alternativa_id: int
