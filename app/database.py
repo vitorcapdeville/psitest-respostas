@@ -15,7 +15,7 @@ def criar_db_e_tabelas():
     respostas = [
         Resposta(envio_id=1, pergunta_id=1, alternativa_id=1),
         Resposta(envio_id=1, pergunta_id=2, alternativa_id=3),
-        Resposta(envio_id=1, pergunta_id=3, alternativa_id=2),
+        Resposta(envio_id=1, pergunta_id=5, alternativa_id=2),
     ]
     questionario = QuestionariosEnviados(
         psicologo_email="vitor771@gmail.com", paciente_email="teste@email.com", questionario_id=1, respostas=respostas
