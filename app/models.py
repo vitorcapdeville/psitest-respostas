@@ -14,6 +14,7 @@ class QuestionariosEnviados(QuestionariosBase, table=True):
 
 
 class QuestionariosEnviadosComStatus(QuestionariosBase):
+    id: int
     respondido: bool
 
 
