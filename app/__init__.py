@@ -1,5 +1,5 @@
 from typing import Annotated
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, unquote_plus
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -39,7 +39,7 @@ def obter_respostas_psicologo(
         select(QuestionariosEnviados).filter(QuestionariosEnviados.psicologo_email == email)
     ).all()
     if not questionarios_enviados:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Respostas não encontradas.")
+        return []
     return [
         QuestionariosEnviadosComStatus(
             id=questionario.id,
