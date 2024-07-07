@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    PSITEST_AUTH: str
+    PSITEST_EMAILS: str
+    FRONT_END_URL: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

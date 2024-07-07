@@ -1,17 +1,20 @@
 from typing import Annotated
+from urllib.parse import quote_plus
 
+import httpx
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy_utils import database_exists
 from sqlmodel import Session, select
 
 from app.database import criar_db_e_tabelas, engine, get_session
 from app.models import (
+    QuestionarioPublic,
     QuestionariosBase,
     QuestionariosEnviados,
-    QuestionarioPublic,
     QuestionariosEnviadosComStatus,
     Resposta,
 )
+from app.settings import Settings, get_settings
 
 if not database_exists(engine.url):
     criar_db_e_tabelas()
@@ -61,9 +64,25 @@ def obter_envios_por_email(email: str, session: Annotated[Session, Depends(get_s
 
 
 @app.post("/envio")
-def registrar_envio(info_envio: QuestionariosBase, session: Annotated[Session, Depends(get_session)]) -> None:
+async def registrar_envio(
+    info_envio: QuestionariosBase,
+    session: Annotated[Session, Depends(get_session)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> None:
     session.add(QuestionariosEnviados(**info_envio.model_dump()))
     session.commit()
+
+    data = {
+        "email": quote_plus(info_envio.paciente_email),
+        "subject": "Novo questionário atribuido a você",
+        "message": f"Olá, você recebeu um novo questionário de {info_envio.psicologo_email}. Acesse este link para respondê-lo: {settings.FRONT_END_URL}/responder/{info_envio.paciente_email}",
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"{settings.PSITEST_EMAILS}/send-email", json=data)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
 
 
 @app.post("/responder")
