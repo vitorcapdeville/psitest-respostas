@@ -7,7 +7,9 @@ services:
       - 8005:80
     networks:
       - mynetwork
-    env_file: ".env"
+    environment:
+      - PSITEST_EMAILS=http://emails:80
+      - FRONT_END_URL=http://localhost:3000
 networks:
   mynetwork:
     external: true
