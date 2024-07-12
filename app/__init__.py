@@ -69,9 +69,6 @@ async def registrar_envio(
     session: Annotated[Session, Depends(get_session)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> None:
-    session.add(QuestionariosEnviados(**info_envio.model_dump()))
-    session.commit()
-
     data = {
         "email": quote_plus(info_envio.paciente_email),
         "subject": "Novo questionário atribuido a você",
@@ -83,6 +80,9 @@ async def registrar_envio(
 
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    session.add(QuestionariosEnviados(**info_envio.model_dump()))
+    session.commit()
 
 
 @app.post("/responder")
